@@ -4,7 +4,7 @@ require('dotenv').config()
 const app =express()
 const port=process.env.PORT ||3000
 const { MongoClient, ServerApiVersion } = require('mongodb');
-// console.log(process.env.DB_USER);
+console.log(process.env.DB_USER);
 
 
 
@@ -21,14 +21,22 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
+
+    const  coffeesCollection=client.db('coffeeDB').collection('coffees')
+
+    app.post('/coffees',async(req,res)=>{
+        const newCoffee=req.body
+        console.log(newCoffee);
+        const result=await coffeesCollection.insertOne(newCoffee)
+        res.send(result)
+    })
+    
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
+    
+    // await client.close();
   }
 }
 run().catch(console.dir);
