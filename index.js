@@ -24,6 +24,7 @@ async function run() {
     await client.connect();
 
     const  coffeesCollection=client.db('coffeeDB').collection('coffees')
+    const  usersCollection=client.db('coffeeDB').collection('users')
 
     app.get('/coffees',async(req,res)=>{
       const result =await coffeesCollection.find().toArray()
@@ -43,6 +44,14 @@ async function run() {
         console.log(newCoffee);
         const result=await coffeesCollection.insertOne(newCoffee)
         res.send(result)
+    })
+    // users
+    app.post('/users',async(req,res)=>{
+      const newUser=req.body
+      console.log(newUser);
+      const result=await usersCollection.insertOne(newUser)
+      res.send(result)
+      
     })
 
     app.put('/coffees/:id', async(req,res)=>{
