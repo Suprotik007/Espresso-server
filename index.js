@@ -31,6 +31,12 @@ async function run() {
       res.send(result);
       
     })
+    // user
+    app.get('/users',async(req,res)=>{
+      const result =await usersCollection.find().toArray()
+      res.send(result);
+      
+    })
 
     app.get('/coffees/:id', async(req,res)=>{
       const id =req.params.id
@@ -72,7 +78,13 @@ async function run() {
       const result =await coffeesCollection.deleteOne(query)
       res.send(result)
     })
-    
+    // user
+    app.delete('/users/:id', async(req,res)=>{
+      const id=req.params.id
+      const query={_id:new ObjectId(id)}
+      const result=await usersCollection.deleteOne(query)
+      res.send(result)
+    })
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
