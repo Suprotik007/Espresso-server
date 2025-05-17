@@ -1,5 +1,5 @@
 const express =require('express')
-const cors=require('cors')
+const cors=require('cors')({ origin: true })
 require('dotenv').config()
 const app =express()
 const port=process.env.PORT ||3000
@@ -7,6 +7,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 console.log(process.env.DB_USER);
 
 
+// const cors = require('cors')({ origin: true });
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.8n6fjbk.mongodb.net/?retryWrites=true&w=majority&appName=cluster0`;
 
@@ -58,6 +59,19 @@ async function run() {
       const result=await usersCollection.insertOne(newUser)
       res.send(result)
       
+    })
+
+
+    app.patch('/users',async(req,res)=>{
+      const{email,lastSignInTime}=req.body;
+      const filter ={email:email}
+      const updatedDoc={
+        $set:{
+          lastSignInTime:lastSignInTime
+        }
+      }
+      const result=await usersCollection.updateOne(filter, updatedDoc)
+      res.send(result)
     })
 
     app.put('/coffees/:id', async(req,res)=>{
